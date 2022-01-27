@@ -8,8 +8,17 @@ const Portfolio = () => {
   return (
     <Wrapper> 
       <Context>
-      <BalanceChart />
-      <PortfolioTable>
+      <Chart>
+        <div>
+          <BalanceTitle>Portolio balance</BalanceTitle>
+          <BalanceValue>
+            {"$"}
+            {walletBalance.toLocaleString()}
+          </BalanceValue>
+        </div>
+        <BalanceChart />
+      </Chart>
+       <PortfolioTable>
         <TableItem>
           <Title>Your Assets</Title>
         </TableItem>
@@ -50,6 +59,24 @@ const Context = styled.div`
   width: 100%;
   max-width: 1000px;
   padding: 2rem 1rem;
+`;
+
+const Chart = styled.div`
+  border: 1px solid #282b2f;
+  padding: 1rem 2rem;
+`;
+
+const Balance = styled.div``;
+
+const BalanceTitle = styled.div`
+  color: #8a919e;
+  font-size: 0.9rem;
+`;
+
+const BalanceValue = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
 `;
 
 const PortfolioTable = styled.div`
