@@ -1,13 +1,24 @@
+import styled from 'styled-components';
 
 const Promos = () => {
     return(
       <Wrapper>
         <OfferCard>
           <Title>Yeild earned</Title>
+          <Description>Earn up to 2.84% APY on your Crypto</Description>
+          <Placeholder />
+          <Additional style={{ fontSize: '1.5rem' }}>
+            $0.000066 <span>2.84% APY</span>
+          </Additional>
         </OfferCard>
 
         <OfferCard>
           <Title>Learn and Earn</Title>
+          <Description>Earn up to 2.84% APY on your Crypto</Description>
+          <Placeholder />
+          <Additional style={{ color: '#3773f5' }}>
+            Verify Identety
+          </Additional>
         </OfferCard>
       </Wrapper>
     )
@@ -38,7 +49,7 @@ const Placeholder = styled.div`
   flex: 1;
 `;
 
-const additional = styled.div`
+const Additional = styled.div`
   font-size: 1.1rem;
   font-weight: 700;
   display: flex;
