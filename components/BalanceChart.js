@@ -2,7 +2,19 @@ import styled from 'style-component'
 import { Line } from 'react-chartjs-2';
 import Chart from 'Chart.js/auto';
 
- 
+const data = {
+    labels: [
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sept",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+    ],
     datasets: [
       {
         fill: false,
