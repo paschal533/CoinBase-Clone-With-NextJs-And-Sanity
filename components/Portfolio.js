@@ -1,61 +1,91 @@
-import styled from 'styled-components';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { coins } from '../static/coins';
-import Coin from './Coin';
-import BalanceChart from './BalanceChart';
+import styled from "styled-components";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { coins } from "../data/coins";
+import Coin from "./Coin";
+import BalanceChart from "./BalanceChart";
+import { useEffect, useState } from "react";
 
-const Portfolio = () => {
+function Portfolio({ thirdWebTokens, sanityTokens, walletAddress }) {
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  const tokenToUsd = {};
+  for (const token of sanityTokens) {
+    tokenToUsd[token.contractAddress] = Number(token.usdPrice);
+  }
+
+  useEffect(() => {
+    const calculateTotalBalance = async () => {
+      const totalBalance = await Promise.all(
+        thirdWebTokens.map(async (token) => {
+          const balance = await token.balanceOf(walletAddress);
+          return Number(balance.displayValue) * tokenToUsd[token.address];
+        })
+      );
+
+      setWalletBalance(totalBalance.reduce((acc, cur) => acc + cur, 0));
+    };
+
+    return calculateTotalBalance();
+  }, [
+    thirdWebTokens,
+    sanityTokens,
+  ]);
+
   return (
-    <Wrapper> 
-      <Context>
-      <Chart>
-        <div>
-          <BalanceTitle>Portolio balance</BalanceTitle>
-          <BalanceValue>
-            {"$"}
-            {walletBalance.toLocaleString()}
-          </BalanceValue>
-        </div>
-        <BalanceChart />
-      </Chart>
-       <PortfolioTable>
-        <TableItem>
-          <Title>Your Assets</Title>
-        </TableItem>
-        <Divider />
-        <Table>
+    <Wrapper>
+      <Content>
+        <Chart>
+          <div>
+            <BalanceTitle>Portolio balance</BalanceTitle>
+            <BalanceValue>
+              {"$"}
+              {walletBalance.toLocaleString()}
+            </BalanceValue>
+          </div>
+          <BalanceChart />
+        </Chart>
+        <PortfolioTable>
           <TableItem>
-            <TableRow>
-              <div style={{ flex: 3 }}>Name</div>
-              <div style={{ flex: 2 }}>Balance</div>
-              <div style={{ flex: 1 }}>Price</div>
-              <div style={{ flex: 1 }}>Allocation</div>
-              <div style={{ flex: 0 }}><BsThreeDotsVertical /></div>
-            </TableRow>
+            <Title>Your Assets</Title>
           </TableItem>
           <Divider />
-          <div>{coins.map(coin => (
+          <Table>
+            <TableItem>
+              <TableRow>
+                <div style={{ flex: 3 }}>Name</div>
+                <div style={{ flex: 2 }}>Balance</div>
+                <div style={{ flex: 1 }}>Price</div>
+                <div style={{ flex: 1 }}>Allocation</div>
+                <div style={{ flex: 0 }}>
+                  <BsThreeDotsVertical />
+                </div>
+              </TableRow>
+            </TableItem>
+            <Divider />
             <div>
-              <Coin coin={coin} />
-              <Divider />
+              {coins.map((coin, index) => (
+                <div key={index}>
+                  <Coin coin={coin} />
+                  <Divider />
+                </div>
+              ))}
             </div>
-          ))}</div>
-        </Table>
-      </PortfolioTable>
-      </Context>
+          </Table>
+        </PortfolioTable>
+      </Content>
     </Wrapper>
-  )
+  );
 }
 
 export default Portfolio;
 
 const Wrapper = styled.div`
+  display: flex;
   flex: 1;
-  diaplay: flex;
   justify-content: center;
 `;
 
-const Context = styled.div`
+const Content = styled.div`
   width: 100%;
   max-width: 1000px;
   padding: 2rem 1rem;
@@ -84,7 +114,7 @@ const PortfolioTable = styled.div`
   border: 1px solid #282b2f;
 `;
 
-const Table = styled.div`
+const Table = styled.table`
   width: 100%;
 `;
 
@@ -92,9 +122,9 @@ const TableRow = styled.tr`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  
+
   & > th {
-      text-align: left;
+    text-align: left;
   }
 `;
 
@@ -103,10 +133,10 @@ const TableItem = styled.div`
 `;
 
 const Divider = styled.div`
-  border-bottom: 1x solid #282b2f;
+  border-bottom: 1px solid #282b2f;
 `;
 
 const Title = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
-`; 
+`;
